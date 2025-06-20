@@ -26,7 +26,7 @@ public class Principal {
 
 
     public Catalogo obtenerLibros(){
-        var json = consumoAPI.obtenerDatos("https://gutendex.com/books/?page=3");
+        var json = consumoAPI.obtenerDatos("https://gutendex.com/books/?languages=es");
         var datos = conversor.obtenerDatos(json, Catalogo.class);
         return datos;
         //System.out.println(datos);
@@ -39,9 +39,10 @@ public class Principal {
                     1. Obtener libros por titulo
                     2. Mostrar catalogo
                     3. Buscar Libro por título
-                    4. Buscar por idioma original
-                    5. Listar autores
-                    6. Listar autores por año en que vivieron
+                    4. Buscar por idioma
+                    5. Cantidad de libros por idioma
+                    6. Listar autores
+                    7. Listar autores por año en que vivieron
                     0. Salir
                     """;
             System.out.println(menu);
@@ -72,10 +73,14 @@ public class Principal {
                     break;
 
                 case 5:
-                    listarAutores();
+                    listarCantidadDeLibrosPorIdioma();
                     break;
 
                 case 6:
+                    listarAutores();
+                    break;
+
+                case 7:
                     listarAutoresPorAnio();
                     break;
 
@@ -150,6 +155,17 @@ public class Principal {
         System.out.println("Los libros en " + idiomaBuscado + " son: ");
         librosPorIdioma.forEach(System.out::println);
 
+    }
+
+    private void listarCantidadDeLibrosPorIdioma(){
+        var idiomaEspanol = Idioma.fromEspanol("espanol");
+        var idiomaIngles = Idioma.fromEspanol("ingles");
+        var listaLibrosIngles = repository.findByIdioma(idiomaIngles);
+        var listaLibrosEspaniol = repository.findByIdioma(idiomaEspanol);
+        var cantidadIngles = listaLibrosIngles.stream().count();
+        var cantidadEspanol = listaLibrosEspaniol.stream().count();
+        System.out.println("Hay " + cantidadIngles + " Libros en inglés registrados"
+        + "\nHay " + cantidadEspanol + " Libros en español registrados");
     }
 
     private void listarAutores(){
